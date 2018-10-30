@@ -9,7 +9,7 @@ class SevenWonders
   end
 
   def get_coordinates
-    coordinates = []
+    coordinates = {}
 
     encoded_uri = URI.encode("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=#{@wonder}&inputtype=textquery&fields=geometry&key=AIzaSyBP30mYnbwKpZ0lCHtp6FuvcNSjNG0GsGM")
 
@@ -17,10 +17,8 @@ class SevenWonders
 
     parsed_response = response.parsed_response
 
-    lat = parsed_response["candidates"][0]["geometry"]["location"]["lat"]
-    lng = parsed_response["candidates"][0]["geometry"]["location"]["lng"]
-    coordinates << lat
-    coordinates << lng
+    coordinates["lat"] = parsed_response["candidates"][0]["geometry"]["location"]["lat"]
+    coordinates["lng"] = parsed_response["candidates"][0]["geometry"]["location"]["lng"]
 
     return coordinates
   end
@@ -32,10 +30,7 @@ seven_wonders = ["Great Pyramid of Giza", "Ishtar Gate", "Colossus of Rhodes", "
 
 seven_wonders.each do |wonder|
   theWonder = SevenWonders.new(wonder)
-  coordinate_hash[wonder] = {
-    "lat" => theWonder.get_coordinates[0],
-    "lng" => theWonder.get_coordinates[1]
-  }
+  coordinate_hash[wonder] = theWonder.get_coordinates
 end
 
 ap coordinate_hash
